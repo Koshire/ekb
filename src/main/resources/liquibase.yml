@@ -1,0 +1,5 @@
+url: jdbc:postgresql://192.168.12.139:5432/postgres
+username: postgres
+password: 1234567
+driver: org.postgresql.Driver
+changeLogFile: db/changelog/db.changelog-master.yml
