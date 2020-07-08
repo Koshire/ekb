@@ -1,5 +1,6 @@
 package com.ktaksv.ekb.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ktaksv.ekb.model.dto.UserModelAddDto;
 import com.ktaksv.ekb.model.dto.UserModelFilterDto;
 import com.ktaksv.ekb.model.dto.UserModelResponseDto;
@@ -13,10 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -27,7 +27,7 @@ public class UserModelController {
 
     @PostMapping(path = "/add/one/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "add one user", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "add one user", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<UserModelResponseDto> addOne(@RequestBody UserModelAddDto dto) {
         try {
             return ResponseEntity.ok(service.save(dto));
@@ -38,7 +38,7 @@ public class UserModelController {
 
     @GetMapping(path = "/get/{id}/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "get one user by id", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "get one user by id", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<UserModelResponseDto> getOne(@PathVariable("id") Long id) {
         try {
             return ResponseEntity.ok(service.getOne(id));
@@ -49,7 +49,7 @@ public class UserModelController {
 
     @GetMapping(path = "/get/all/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "get all users", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "get all users", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<Page<UserModelResponseDto>> getAll(@RequestParam("page") int page,
                                                              @RequestParam("pageSize") int pageSize) {
         System.out.println();
@@ -62,7 +62,7 @@ public class UserModelController {
 
     @PostMapping(path = "/get/all/filtered/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "get all filtered users", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "get all filtered users", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<Page<UserModelResponseDto>> getAllFiltered(@RequestParam("page") int page,
                                                                      @RequestParam("pageSize") int pageSize,
                                                                      @RequestBody(required = false) UserModelFilterDto dto) {
@@ -75,8 +75,8 @@ public class UserModelController {
     }
 
     @GetMapping(path = "/get/me/user/")
-    @Operation(summary = "get me", security = @SecurityRequirement(name = "basicAuth"))
-    public ResponseEntity<UserModelResponseDto> me(Principal principal) {
+    @Operation(summary = "get me", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<JsonNode> me(Authentication principal) {
         try {
             return ResponseEntity.ok(service.getMe());
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class UserModelController {
 
     @PostMapping(path = "/delete/{id}/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "delete one user", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "delete one user", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<Boolean> deleteOne(@PathVariable("id") Long id) {
         try {
             return ResponseEntity.ok(service.delete(id));
@@ -97,7 +97,7 @@ public class UserModelController {
 
     @PostMapping(path = "/enable/{id}/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "enable/disable one user", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "enable/disable one user", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<Boolean> enableOne(@PathVariable("id") Long id,
                                              @RequestParam(value = "enable", required = true) boolean enable) {
         try {
@@ -109,7 +109,7 @@ public class UserModelController {
 
     @PostMapping(path = "/update/{id}/user/")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "update one user", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "update one user", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<UserModelResponseDto> enableOne(@PathVariable("id") Long id,
                                                           @RequestBody Object body) {
         try {

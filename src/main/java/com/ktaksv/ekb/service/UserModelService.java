@@ -1,5 +1,7 @@
 package com.ktaksv.ekb.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ktaksv.ekb.model.UserModel;
 import com.ktaksv.ekb.model.dto.UserModelAddDto;
@@ -20,6 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.jwt.JwtHelper;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -128,9 +133,12 @@ public class UserModelService {
                 .map(baseMapper::mapToResponse);
     }
 
-    public UserModelResponseDto getMe() {
+    @Autowired
+    private JwtAccessTokenConverter converter;
+
+    public JsonNode getMe() throws JsonProcessingException {
         Authentication authentication = facade.getAuthentication();
-        UserModel user = (UserModel) authentication.getPrincipal();
-        return baseMapper.mapToResponse(user);
+        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        return objectMapper.readTree(JwtHelper.decode(details.getTokenValue()).getClaims()).get("userData");
     }
 }
