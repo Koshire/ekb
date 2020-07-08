@@ -30,3 +30,20 @@ create table user_role
     constraint user_role_pk
         unique (user_id, role)
 );
+
+create table history
+(
+    id bigserial not null
+        constraint history_pk
+            primary key,
+    entity_type varchar,
+    entity_id bigint,
+    history_action varchar,
+    initiator varchar,
+    date_in date,
+    fields text
+);
+
+alter table history owner to postgres;
+
+

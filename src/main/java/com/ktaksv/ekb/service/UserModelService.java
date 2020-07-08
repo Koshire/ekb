@@ -24,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,9 +131,6 @@ public class UserModelService {
         return customRepository.findAllFiltered(PageRequest.of(page < 1 ? 0 : page - 1, pageSize <= 0 ? 50 : pageSize), dto)
                 .map(baseMapper::mapToResponse);
     }
-
-    @Autowired
-    private JwtAccessTokenConverter converter;
 
     public JsonNode getMe() throws JsonProcessingException {
         Authentication authentication = facade.getAuthentication();
